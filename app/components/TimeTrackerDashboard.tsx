@@ -53,7 +53,7 @@ export function TimeTrackerDashboard() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [report, setReport] = useState<ProjectTimeReport | null>(null);
-  const [selectedLabels, setSelectedLabels] = useState<string[]>([]);
+  const [selectedEpics, setSelectedEpics] = useState<string[]>([]);
 
   const commitMonthLabel = useMemo(() => {
     if (!report?.commitRange?.from) {
@@ -69,24 +69,24 @@ export function TimeTrackerDashboard() {
     });
   }, [report?.commitRange?.from]);
 
-  const labelOptions = report?.summary.byLabel ?? [];
+  const epicOptions = report?.summary.byEpic ?? [];
 
   useEffect(() => {
-    if (!labelOptions.length) {
-      setSelectedLabels([]);
+    if (!epicOptions.length) {
+      setSelectedEpics([]);
       return;
     }
-    setSelectedLabels((prev) => {
-      const available = new Set(labelOptions.map((group) => group.label));
-      const filtered = prev.filter((label) => available.has(label));
+    setSelectedEpics((prev) => {
+      const available = new Set(epicOptions.map((group) => group.label));
+      const filtered = prev.filter((epic) => available.has(epic));
       if (filtered.length) {
         return filtered;
       }
-      return labelOptions
-        .slice(0, Math.min(4, labelOptions.length))
+      return epicOptions
+        .slice(0, Math.min(4, epicOptions.length))
         .map((group) => group.label);
     });
-  }, [labelOptions]);
+  }, [epicOptions]);
 
   const summaryCards = useMemo(() => {
     if (!report) {
@@ -160,6 +160,15 @@ export function TimeTrackerDashboard() {
     return map;
   }, [report?.summary.byLabel]);
 
+  const epicColorMap = useMemo(() => {
+    const palette = [...COLORS.PRIMARY, ...COLORS.TEAM];
+    const map = new Map<string, string>();
+    (report?.summary.byEpic ?? []).forEach((group, index) => {
+      map.set(group.label, palette[index % palette.length]);
+    });
+    return map;
+  }, [report?.summary.byEpic]);
+
   const issueChart = useMemo(
     () => reduceSummary(report?.summary.byIssue ?? []),
     [report?.summary.byIssue]
@@ -223,29 +232,29 @@ export function TimeTrackerDashboard() {
 
   const commitChartData = useMemo(() => report?.commitActivity ?? [], [report]);
 
-  const labelStacked = useMemo(() => {
+  const epicStacked = useMemo(() => {
     if (
       !report ||
-      !report.summary.weeklyLabelBreakdown.length ||
-      !selectedLabels.length
+      !report.summary.weeklyEpicBreakdown.length ||
+      !selectedEpics.length
     ) {
       return [];
     }
     const fallbackPalette = [...COLORS.PRIMARY, ...COLORS.TEAM];
-    return report.summary.weeklyLabelBreakdown
+    return report.summary.weeklyEpicBreakdown
       .map((week) => {
-        const segments = selectedLabels
-          .map((label, index) => {
-            const entry = week.totals.find((item) => item.label === label);
+        const segments = selectedEpics
+          .map((epic, index) => {
+            const entry = week.totals.find((item) => item.epic === epic);
             const hours = secondsToHours(entry?.seconds ?? 0);
             if (hours <= 0) {
               return null;
             }
             const color =
-              labelColorMap.get(label) ??
+              epicColorMap.get(epic) ??
               fallbackPalette[index % fallbackPalette.length];
             return {
-              label,
+              label: epic,
               value: hours,
               color,
             };
@@ -278,7 +287,7 @@ export function TimeTrackerDashboard() {
           segments: { label: string; value: number; color: string }[];
         } => Boolean(week)
       );
-  }, [report, selectedLabels, labelColorMap]);
+  }, [report, selectedEpics, epicColorMap]);
 
   const stateDonut = useMemo(() => {
     if (!report || !report.summary.byState.length) {
@@ -292,12 +301,12 @@ export function TimeTrackerDashboard() {
     }));
   }, [report]);
 
-  const toggleLabel = (label: string) => {
-    setSelectedLabels((prev) => {
-      if (prev.includes(label)) {
-        return prev.filter((item) => item !== label);
+  const toggleEpic = (epic: string) => {
+    setSelectedEpics((prev) => {
+      if (prev.includes(epic)) {
+        return prev.filter((item) => item !== epic);
       }
-      return [...prev, label];
+      return [...prev, epic];
     });
   };
 
@@ -533,16 +542,16 @@ export function TimeTrackerDashboard() {
             </div>
             <div style={styles.chartRow}>
               <div style={styles.chartPanel}>
-                <h3 style={styles.chartTitle}>Focus by label (per person)</h3>
-                {labelOptions.length ? (
+                <h3 style={styles.chartTitle}>Focus by epic (per person)</h3>
+                {epicOptions.length ? (
                   <div style={styles.labelSelector}>
-                    {labelOptions.map((option) => {
-                      const active = selectedLabels.includes(option.label);
+                    {epicOptions.map((option) => {
+                      const active = selectedEpics.includes(option.label);
                       return (
                         <button
                           key={option.label}
                           type="button"
-                          onClick={() => toggleLabel(option.label)}
+                          onClick={() => toggleEpic(option.label)}
                           style={{
                             ...styles.labelChip,
                             ...(active
@@ -560,9 +569,9 @@ export function TimeTrackerDashboard() {
                   </div>
                 ) : null}
                 <WeeklyStackedBarChart
-                  data={labelStacked}
+                  data={epicStacked}
                   valueLabel="h"
-                  emptyMessage="No labelled activity captured."
+                  emptyMessage="No epic activity captured."
                 />
               </div>
               <div

@@ -3,7 +3,7 @@ import {
   fetchProjectTimeReport,
   fetchCommitActivityByDay,
   type GitLabCredentials,
-  type TimeRangeFilter
+  type TimeRangeFilter,
 } from "../../lib/gitlab";
 
 export const dynamic = "force-dynamic";
@@ -42,11 +42,11 @@ export async function POST(request: Request) {
   try {
     const range: TimeRangeFilter = {
       from: payload.from,
-      to: payload.to
+      to: payload.to,
     };
     const credentials: GitLabCredentials = {
       apiUrl: payload.apiUrl,
-      token: payload.token
+      token: payload.token,
     };
 
     const report = await fetchProjectTimeReport(

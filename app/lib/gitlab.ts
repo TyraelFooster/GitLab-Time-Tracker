@@ -39,6 +39,12 @@ export interface WeeklyLabelSummary {
   totals: { label: string; seconds: number }[];
 }
 
+export interface WeeklyEpicSummary {
+  weekStart: string;
+  label: string;
+  totals: { epic: string; seconds: number }[];
+}
+
 export interface CommitActivityDay {
   date: string;
   count: number;
@@ -111,6 +117,7 @@ export interface TimeSummary {
   weeklyByUser: WeeklyUserSummary[];
   labelByUser: LabelUserSummary[];
   weeklyLabelBreakdown: WeeklyLabelSummary[];
+  weeklyEpicBreakdown: WeeklyEpicSummary[];
 }
 
 interface GraphQLIssueNode {
@@ -372,6 +379,21 @@ function isWithinRange(spentAt: string, range: TimeRangeFilter): boolean {
   return true;
 }
 
+/**
+ * Builds a comprehensive time summary from issues and their timelogs.
+ * 
+ * Contributors are automatically discovered from timelogs - no hardcoded user lists needed!
+ * The function analyzes all timelogs across all issues and dynamically builds:
+ * - byUser: All unique users who logged time (contributors)
+ * - byIssue: Time spent per issue
+ * - byEpic: Time spent per epic
+ * - byLabel: Time spent per label
+ * - byState: Time spent per issue state
+ * - byDate: Daily time breakdown
+ * - weeklyByUser: Weekly breakdown by user
+ * - labelByUser: Label breakdown by user
+ * - weeklyLabelBreakdown: Weekly label breakdown
+ */
 function buildTimeSummary(issues: GitLabIssueTime[]): TimeSummary {
   let totalSeconds = 0;
   const byUser = new Map<string, TimeSummaryGroup>();
@@ -397,6 +419,14 @@ function buildTimeSummary(issues: GitLabIssueTime[]): TimeSummary {
     }
   >();
   const weeklyLabelBuckets = new Map<
+    string,
+    {
+      weekStart: string;
+      label: string;
+      totals: Map<string, number>;
+    }
+  >();
+  const weeklyEpicBuckets = new Map<
     string,
     {
       weekStart: string;
@@ -482,6 +512,21 @@ function buildTimeSummary(issues: GitLabIssueTime[]): TimeSummary {
           weeklyLabelBuckets.set(weekBucket.key, weeklyLabelBucket);
         }
       }
+
+      // Process epic breakdown for weekly buckets
+      if (weekBucket) {
+        const epicKey = issue.epic?.id ?? "unassigned";
+        const epicLabel = issue.epic ? issue.epic.title : "No epic";
+        const weeklyEpicBucket =
+          weeklyEpicBuckets.get(weekBucket.key) ?? {
+            weekStart: weekBucket.start,
+            label: weekBucket.label,
+            totals: new Map<string, number>()
+          };
+        const current = weeklyEpicBucket.totals.get(epicLabel) ?? 0;
+        weeklyEpicBucket.totals.set(epicLabel, current + timelog.seconds);
+        weeklyEpicBuckets.set(weekBucket.key, weeklyEpicBucket);
+      }
     }
 
     const issueGroup = byIssue.get(issue.id) ?? {
@@ -560,6 +605,15 @@ function buildTimeSummary(issues: GitLabIssueTime[]): TimeSummary {
         label: bucket.label,
         totals: Array.from(bucket.totals.entries())
           .map(([label, seconds]) => ({ label, seconds }))
+          .sort((a, b) => b.seconds - a.seconds)
+      }))
+      .sort((a, b) => a.weekStart.localeCompare(b.weekStart)),
+    weeklyEpicBreakdown: Array.from(weeklyEpicBuckets.values())
+      .map((bucket) => ({
+        weekStart: bucket.weekStart,
+        label: bucket.label,
+        totals: Array.from(bucket.totals.entries())
+          .map(([epic, seconds]) => ({ epic, seconds }))
           .sort((a, b) => b.seconds - a.seconds)
       }))
       .sort((a, b) => a.weekStart.localeCompare(b.weekStart))
