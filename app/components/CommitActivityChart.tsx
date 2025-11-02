@@ -14,7 +14,7 @@ const WEEKDAY_LABELS = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
 
 const CommitActivityChartComponent = ({
   data,
-  monthLabel
+  monthLabel,
 }: CommitActivityChartProps) => {
   const [hoveredCell, setHoveredCell] = useState<{
     day: CommitActivityDay;
@@ -50,7 +50,7 @@ const CommitActivityChartComponent = ({
       const parsed = new Date(`${first.date}T00:00:00Z`);
       return parsed.toLocaleDateString(undefined, {
         day: "numeric",
-        month: "short"
+        month: "short",
       });
     });
     const max = Math.max(...data.map((day) => day.count), 0);
@@ -66,7 +66,7 @@ const CommitActivityChartComponent = ({
     "#9be9a8",
     "#40c463",
     "#30a14e",
-    "#216e39"
+    "#216e39",
   ];
 
   const columns = prepared.weeks.length;
@@ -77,7 +77,7 @@ const CommitActivityChartComponent = ({
       <div
         style={{
           ...styles.grid,
-          gridTemplateColumns: `auto repeat(${columns}, minmax(0, 1fr))`
+          gridTemplateColumns: `auto repeat(${columns}, minmax(0, 1fr))`,
         }}
       >
         <span />
@@ -104,7 +104,7 @@ const CommitActivityChartComponent = ({
                       cell.count,
                       prepared.max,
                       colorScale
-                    )
+                    ),
                   }}
                   title={`${cell.date}: ${cell.count} commit${
                     cell.count === 1 ? "" : "s"
@@ -115,7 +115,7 @@ const CommitActivityChartComponent = ({
                       setHoveredCell({
                         day: cell,
                         x: rect.left + rect.width / 2,
-                        y: rect.top - 10
+                        y: rect.top - 10,
                       });
                     }
                   }}
@@ -134,7 +134,7 @@ const CommitActivityChartComponent = ({
               key={color}
               style={{
                 ...styles.legendSwatch,
-                backgroundColor: color
+                backgroundColor: color,
               }}
             />
           ))}
@@ -166,7 +166,7 @@ const CommitTooltip = ({ hoveredCell }: CommitTooltipProps) => {
     weekday: "long",
     year: "numeric",
     month: "long",
-    day: "numeric"
+    day: "numeric",
   });
 
   return (
@@ -175,7 +175,7 @@ const CommitTooltip = ({ hoveredCell }: CommitTooltipProps) => {
         ...styles.tooltip,
         left: x,
         top: y,
-        transform: "translateX(-50%) translateY(-100%)"
+        transform: "translateX(-50%) translateY(-100%)",
       }}
     >
       <div style={styles.tooltipHeader}>
@@ -196,9 +196,7 @@ const CommitTooltip = ({ hoveredCell }: CommitTooltipProps) => {
               >
                 {commit.short_id}
               </a>
-              <span style={styles.tooltipCommitTitleText}>
-                {commit.title}
-              </span>
+              <span style={styles.tooltipCommitTitleText}>{commit.title}</span>
             </div>
             <div style={styles.tooltipCommitAuthor}>
               by {commit.author_name}
@@ -207,7 +205,8 @@ const CommitTooltip = ({ hoveredCell }: CommitTooltipProps) => {
         ))}
         {commits.length > 5 && (
           <div style={styles.tooltipMore}>
-            + {commits.length - 5} more commit{commits.length - 5 === 1 ? "" : "s"}
+            + {commits.length - 5} more commit
+            {commits.length - 5 === 1 ? "" : "s"}
           </div>
         )}
       </div>
@@ -242,59 +241,59 @@ function colorForValue(
 const styles: Record<string, CSSProperties> = {
   wrapper: {
     display: "grid",
-    gap: "0.75rem"
+    gap: "0.75rem",
   },
   caption: {
     fontSize: "0.9rem",
-    color: "rgba(226, 232, 240, 0.75)"
+    color: "rgba(226, 232, 240, 0.75)",
   },
   grid: {
     display: "grid",
     gap: "0.3rem",
-    alignItems: "center"
+    alignItems: "center",
   },
   weekLabel: {
     fontSize: "0.75rem",
     color: "rgba(148, 163, 184, 0.85)",
-    textAlign: "center"
+    textAlign: "center",
   },
   weekday: {
     fontSize: "0.75rem",
-    color: "rgba(148, 163, 184, 0.85)"
+    color: "rgba(148, 163, 184, 0.85)",
   },
   cell: {
     width: "100%",
     aspectRatio: "1 / 1",
-    borderRadius: "0.25rem"
+    borderRadius: "0.25rem",
   },
   emptyCell: {
     width: "100%",
     aspectRatio: "1 / 1",
     borderRadius: "0.25rem",
-    background: "rgba(148, 163, 184, 0.1)"
+    background: "rgba(148, 163, 184, 0.1)",
   },
   legend: {
     display: "flex",
     alignItems: "center",
     gap: "0.75rem",
     fontSize: "0.75rem",
-    color: "rgba(148, 163, 184, 0.85)"
+    color: "rgba(148, 163, 184, 0.85)",
   },
   legendScale: {
     display: "flex",
-    gap: "0.35rem"
+    gap: "0.35rem",
   },
   legendSwatch: {
     width: "1.25rem",
     height: "0.65rem",
-    borderRadius: "0.35rem"
+    borderRadius: "0.35rem",
   },
   legendLabel: {
-    whiteSpace: "nowrap"
+    whiteSpace: "nowrap",
   },
   empty: {
     fontStyle: "italic",
-    color: "rgba(148, 163, 184, 0.9)"
+    color: "rgba(148, 163, 184, 0.9)",
   },
   tooltip: {
     position: "fixed" as const,
@@ -306,8 +305,9 @@ const styles: Record<string, CSSProperties> = {
     maxWidth: "320px",
     fontSize: "0.875rem",
     color: "#f1f5f9",
-    boxShadow: "0 10px 15px -3px rgba(0, 0, 0, 0.3), 0 4px 6px -2px rgba(0, 0, 0, 0.1)",
-    backdropFilter: "blur(10px)"
+    boxShadow:
+      "0 10px 15px -3px rgba(0, 0, 0, 0.3), 0 4px 6px -2px rgba(0, 0, 0, 0.1)",
+    backdropFilter: "blur(10px)",
   },
   tooltipHeader: {
     display: "flex",
@@ -315,27 +315,27 @@ const styles: Record<string, CSSProperties> = {
     alignItems: "center",
     marginBottom: "0.5rem",
     paddingBottom: "0.5rem",
-    borderBottom: "1px solid rgba(148, 163, 184, 0.2)"
+    borderBottom: "1px solid rgba(148, 163, 184, 0.2)",
   },
   tooltipCount: {
     fontSize: "0.75rem",
     color: "rgba(148, 163, 184, 0.8)",
-    fontWeight: "normal" as const
+    fontWeight: "normal" as const,
   },
   tooltipCommits: {
     display: "flex",
     flexDirection: "column" as const,
-    gap: "0.5rem"
+    gap: "0.5rem",
   },
   tooltipCommit: {
     display: "flex",
     flexDirection: "column" as const,
-    gap: "0.25rem"
+    gap: "0.25rem",
   },
   tooltipCommitTitle: {
     display: "flex",
     alignItems: "center",
-    gap: "0.5rem"
+    gap: "0.5rem",
   },
   tooltipCommitLink: {
     color: "#60a5fa",
@@ -343,19 +343,19 @@ const styles: Record<string, CSSProperties> = {
     fontFamily: "monospace",
     fontSize: "0.75rem",
     fontWeight: "bold" as const,
-    flexShrink: 0
+    flexShrink: 0,
   },
   tooltipCommitTitleText: {
     flex: 1,
     overflow: "hidden",
     textOverflow: "ellipsis",
     whiteSpace: "nowrap" as const,
-    fontSize: "0.8rem"
+    fontSize: "0.8rem",
   },
   tooltipCommitAuthor: {
     fontSize: "0.7rem",
     color: "rgba(148, 163, 184, 0.7)",
-    marginLeft: "0.25rem"
+    marginLeft: "0.25rem",
   },
   tooltipMore: {
     fontSize: "0.75rem",
@@ -363,8 +363,8 @@ const styles: Record<string, CSSProperties> = {
     fontStyle: "italic",
     textAlign: "center" as const,
     paddingTop: "0.25rem",
-    borderTop: "1px solid rgba(148, 163, 184, 0.1)"
-  }
+    borderTop: "1px solid rgba(148, 163, 184, 0.1)",
+  },
 };
 
 export const CommitActivityChart = memo(CommitActivityChartComponent);

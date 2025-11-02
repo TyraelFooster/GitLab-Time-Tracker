@@ -13,29 +13,32 @@ A comprehensive Next.js dashboard for visualizing GitLab project time tracking, 
 ## 🚀 Quick Start
 
 1. **Clone the repository**
+
    ```bash
-   git clone <repository-url>
+   git clone https://github.com/NilDitt/GitLab-Time-Tracker.git
    cd Random
    ```
 
 2. **Install dependencies**
+
    ```bash
    npm install
    ```
 
 3. **Configure GitLab access**
+
    - Edit `app/config/tracker-config.ts`
    - Update `GITLAB_CONFIG` with your GitLab project details:
      ```typescript
      export const GITLAB_CONFIG = {
        API_URL: "https://gitlab.com/api/graphql",
-       GROUP_PATH: "your-group-path",
-       TOKEN: "your-gitlab-token",
-       ISSUE_BASE_URL: "https://gitlab.com/your-project/-/issues"
+       PROJECT_PATH: "your-group/your-project", // e.g. "dhbw-se/se-tinf24b2/gruppe-4/dhubbw"
+       TOKEN: "your-gitlab-token", // you need to give read API Access
      } as const;
      ```
 
 4. **Start development server**
+
    ```bash
    npm run dev
    ```
@@ -45,7 +48,7 @@ A comprehensive Next.js dashboard for visualizing GitLab project time tracking, 
 
 ## 📋 Prerequisites
 
-- **Node.js** 18+ 
+- **Node.js** 18+
 - **GitLab Access Token** with API permissions
 - **GitLab Project** with time tracking enabled
 
@@ -67,11 +70,13 @@ A comprehensive Next.js dashboard for visualizing GitLab project time tracking, 
 ## 🔧 Configuration
 
 ### GitLab Setup
+
 1. Create a personal access token in GitLab
 2. Ensure the token has `api` scope
 3. Update the configuration in `tracker-config.ts`
 
 ### Time Range
+
 The dashboard automatically fetches data from the last 12 weeks. Modify the date range in `TimeTrackerDashboard.tsx` if needed.
 
 ## 📁 Project Structure
@@ -95,28 +100,33 @@ next.config.mjs       # Next.js configuration
 ## 🎯 Key Features Explained
 
 ### Commit Hover Tooltips
+
 - Hover over any commit activity tile to see detailed commit information
 - Shows commit titles, authors, and clickable GitLab links
 - Supports days with multiple commits
 
 ### Epic-based Time Tracking
+
 - Automatically aggregates time by epic from GitLab issues
 - Interactive filtering by epic
 - Color-coded visualization
 
 ### Dynamic Contributors
+
 - Automatically discovers team members from GitLab timelogs
 - No need to hardcode team member lists
 
 ## 🔄 Development
 
 ### Build for Production
+
 ```bash
 npm run build
 npm start
 ```
 
 ### TypeScript Checking
+
 ```bash
 npm run type-check
 ```
@@ -135,7 +145,3 @@ npm run type-check
 3. Make your changes
 4. Test thoroughly
 5. Submit a pull request
-
-## 📄 License
-
-This project is for educational and internal use.

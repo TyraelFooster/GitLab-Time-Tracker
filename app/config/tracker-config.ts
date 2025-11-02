@@ -1,15 +1,10 @@
 export const GITLAB_CONFIG = {
   API_URL: "https://gitlab.com/api/graphql",
-  GROUP_PATH: "dhbw-se/se-tinf24b2/gruppe-4",
+  PROJECT_PATH: "dhbw-se/se-tinf24b2/gruppe-4/dhubbw",
   TOKEN: "glpat-c6-ceWrK2uL60VLKxyE-CW86MQp1OmlsMGltCw.01.120sej9l3",
-  ISSUE_BASE_URL:
-    "https://gitlab.com/dhbw-se/se-tinf24b2/gruppe-4/dhubbw/-/issues",
 } as const;
 
-export const PROJECT_PATH = GITLAB_CONFIG.ISSUE_BASE_URL.replace(
-  "https://gitlab.com/",
-  ""
-).replace("/-/issues", "");
+export const PROJECT_PATH = GITLAB_CONFIG.PROJECT_PATH;
 
 export const COLORS = {
   PRIMARY: ["#0088FE", "#00C49F", "#FFBB28", "#FF8042"],
@@ -27,5 +22,5 @@ export const COLORS = {
     "#FFEEAD",
     "#D4A5A5",
   ],
-  HEATMAP: ["#ebedf0", "#9be9a8", "#40c463", "#30a14e", "#216e39"]
+  HEATMAP: ["#ebedf0", "#9be9a8", "#40c463", "#30a14e", "#216e39"],
 } as const;

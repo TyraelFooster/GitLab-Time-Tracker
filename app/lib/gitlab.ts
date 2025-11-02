@@ -770,7 +770,7 @@ export async function fetchCommitActivityByDay(
       }
       const dayKey = commit.committed_date.slice(0, 10);
       counts.set(dayKey, (counts.get(dayKey) ?? 0) + 1);
-      
+
       // Store commit details by day
       const existingCommits = commitsByDay.get(dayKey) ?? [];
       existingCommits.push({
