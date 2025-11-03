@@ -44,7 +44,7 @@ A comprehensive Next.js dashboard for visualizing GitLab project time tracking, 
    ```
 
 5. **Open in browser**
-   - Navigate to [http://localhost:3001](http://localhost:3001)
+   - Navigate to [http://localhost:3000](http://localhost:3000)
 
 ## 📋 Prerequisites
 
