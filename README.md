@@ -49,7 +49,7 @@ A comprehensive Next.js dashboard for visualizing GitLab project time tracking, 
 ## 📋 Prerequisites
 
 - **Node.js** 18+
-- **GitLab Access Token** with API permissions
+- **GitLab Access Token** with read API permissions
 - **GitLab Project** with time tracking enabled
 
 ## 🛠️ Technology Stack
@@ -72,7 +72,7 @@ A comprehensive Next.js dashboard for visualizing GitLab project time tracking, 
 ### GitLab Setup
 
 1. Create a personal access token in GitLab
-2. Ensure the token has `api` scope
+2. Ensure the token has `read api` scope
 3. Update the configuration in `tracker-config.ts`
 
 ### Time Range
