@@ -12,6 +12,7 @@ import {
 import { GITLAB_CONFIG, PROJECT_PATH, COLORS } from "../config/tracker-config";
 import { AreaChart } from "./AreaChart";
 import { DonutChart } from "./DonutChart";
+import TeamWorkTable from "./TeamWorkTable";
 import { WeeklyStackedBarChart } from "./WeeklyStackedBarChart";
 import { CommitActivityChart } from "./CommitActivityChart";
 
@@ -582,6 +583,8 @@ export function TimeTrackerDashboard() {
               </div>
             </div>
           </div>
+
+          <TeamWorkTable summary={report.summary} />
 
           <div style={styles.issueTable}>
             <h3 style={styles.tableTitle}>Issue breakdown</h3>
